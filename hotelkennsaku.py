@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[25]:
+# In[29]:
 
 
 import pandas as pd
@@ -9,7 +9,7 @@ import streamlit as st
 import plotly.express as px
 
 
-# In[26]:
+# In[30]:
 
 
 hotels_df = pd.read_csv("cleaned_hotels.csv")
@@ -26,9 +26,12 @@ hotels_df['review'] = pd.to_numeric(hotels_df['review'], errors='coerce')
 # In[28]:
 
 
-with st.header:st.header("検索条件")
-price_limit = st.slider("宿泊料金の上限", min_value=3000, max_value=100000, step=1000, value=30000)
-score_limit = st.slider("星評価の下限", min_value=0.0, max_value=5.0, step=0.1, value=3.0)
+st.header("検索条件")
+col1, col2 = st.columns(2)
+with col1:
+    price_limit = st.slider("料金の上限", min_value=3000, max_value=100000, step=1000, value=30000)
+with col2:
+    score_limit = st.slider("評価の下限", min_value=0.0,  max_value=5.0, step=0.1, value=3.0)
 
 
 # In[15]:
@@ -40,17 +43,27 @@ filtered_df = hotels_df[
 ]
 
 
+# In[ ]:
+
+
+st.subheader(f"条件に合うホテル: {len(filtered_df)}件")
+
+
 # In[16]:
 
 
-if not filtered_df.empty:fig = px.scatter(filtered_df,
+if not filtered_df.empty:
+    fig = px.scatter(
+        filtered_df,
         x='star',
         y='price',
         hover_data=['title', 'details', 'review'],
-        title='星評価と宿泊料金の関係',
+        title='評価と料金の関係',
         labels={'star': '星評価', 'price': '宿泊料金'}
     )
     st.plotly_chart(fig)
+else:
+    st.warning("条件に合うホテルが見つかりませんでした。検索条件を変更してください。")
 
 
 # In[17]:
@@ -88,10 +101,10 @@ ranking_df = filtered_df.sort_values(by=sort_key, ascending=ascending).head(10)
 
 
 ranking_df['price'] = ranking_df['price'].apply(lambda x: f"¥{x:,}")
-    
+
 st.dataframe(ranking_df[['title', "price", "star", "review", "details"]])
 else:
-    st.info("ランキングを表示するホテルがありません。")
+st.info("ランキングを表示するホテルがありません。")
 
 
 # In[ ]:
