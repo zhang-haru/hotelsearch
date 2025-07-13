@@ -62,8 +62,6 @@ if not filtered_df.empty:
         labels={'star': '星評価', 'price': '宿泊料金'}
     )
     st.plotly_chart(fig)
-else:
-    st.warning("条件に合うホテルが見つかりませんでした。検索条件を変更してください。")
 
 
 # In[17]:
@@ -103,8 +101,6 @@ ranking_df = filtered_df.sort_values(by=sort_key, ascending=ascending).head(10)
 ranking_df['price'] = ranking_df['price'].apply(lambda x: f"¥{x:,}")
 
 st.dataframe(ranking_df[['title', "price", "star", "review", "details"]])
-else:
-st.info("ランキングを表示するホテルがありません。")
 
 
 # In[ ]:
